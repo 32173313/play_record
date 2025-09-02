@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.reward_project.play_record.mapper.PrizeRecordMapper">
+
+    <!--    前面是entity里的，后面是数据库里的-->
+    <resultMap id="PrizeRecordMap" type="com.reward_project.play_record.entity.PrizeRecord">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="date" column="date"/>
+        <result property="stage" column="stage"/>
+        <result property="theme" column="theme"/>
+        <result property="prizeType" column="prize_type"/>
+        <result property="prizeSubType" column="prize_sub_type"/>
+        <result property="prizeAmount" column="prize_amount"/>
+        <result property="outBizNo" column="out_biz_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="addPrizeRecord" resultMap="PrizeRecordMap">
+        <!--        时间类: now()不是对象传入-->
+        insert into `prize_record` (`user_id`, `date`, `stage`, `theme`, `prize_type`, `prize_sub_type`, `prize_amount`, `out_biz_no`, `create_time`, `update_time`)
+        values
+        (#{userId}, #{date}, #{stage}, #{theme}, #{prizeType}, #{prizeSubType}, #{prizeAmount}, #{outBizNo}, now(), now())
+    </select>
+
+    <select id="queryByUserIdAndDateAndType" resultMap="PrizeRecordMap">
+        SELECT *
+        FROM `prize_record`
+        WHERE `user_id` = #{userId} AND `date` = #{date}
+        AND `prize_type` = #{prizeType} AND `prize_sub_type` = #{prizeSubType}
+    </select>
+
+</mapper>

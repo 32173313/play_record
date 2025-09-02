@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.reward_project.play_record.mapper.PlayRecordMapper">
+
+<!--    前面是entity里的，后面是数据库里的-->
+    <resultMap id="PlayRecordResultMap" type="com.reward_project.play_record.entity.PlayRecord">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="musicId" column="music_id"/>
+        <result property="duration" column="duration"/>
+        <result property="type" column="type"/>
+        <result property="subType" column="sub_type"/>
+        <result property="syncTime" column="sync_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="add" resultMap="PlayRecordResultMap">
+        <!--        时间类: now()不是对象传入-->
+        insert into `play_record` (`user_id`, `music_id`, `duration`, `type`, `sub_type`, `sync_time`, `create_time`, `update_time`)
+        values
+        (#{userId}, #{musicId}, #{duration}, #{type}, #{subType}, now(), now(), now())
+    </select>
+
+    <select id="queryPlayRecordByUserIdAndSyncTimeAndType" resultMap="PlayRecordResultMap">
+        SELECT *
+        FROM `play_record`
+        WHERE `user_id` = #{userId}
+        AND `type` = #{type}
+        AND `sub_type` = #{subType}
+        AND `sync_time` BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+</mapper>

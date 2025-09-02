@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.reward_project.play_record.mapper.PlayRecordSummaryMapper">
+
+    <!--    前面是entity里的，后面是数据库里的-->
+    <resultMap id="PlayRecordSummaryResultMap" type="com.reward_project.play_record.entity.PlayRecordSummary">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="totalDuration" column="total_duration"/>
+        <result property="type" column="type"/>
+        <result property="subType" column="sub_type"/>
+        <result property="currentDate" column="current_date"/>
+        <result property="lastPlayTime" column="last_play_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="addPlayRecordSummary" resultMap="PlayRecordSummaryResultMap">
+        insert into `play_record_summary` (`user_id`, `total_duration`, `type`, `sub_type`, `current_date`, `last_play_time`, `create_time`, `update_time`)
+        values
+        (#{userId}, #{totalDuration}, #{type}, #{subType} , #{currentDate}, now(), now(), now())
+    </select>
+
+    <select id="updatePlayRecordSummary" resultMap="PlayRecordSummaryResultMap">
+        UPDATE `play_record_summary`
+        SET
+            `total_duration` = #{totalDuration},
+            `last_play_time` = now(),
+            `update_time` = now()
+        WHERE `user_id` = #{userId}
+          AND `current_date` = #{currentDate}
+          AND `type` = #{type}
+          AND `sub_type` = #{subType}
+    </select>
+
+    <select id="queryByUserIdAndDateAndType" resultMap="PlayRecordSummaryResultMap">
+        SELECT *
+        FROM play_record_summary
+        WHERE `user_id` = #{userId}
+        AND `type` = #{type}
+        AND `sub_type` = #{subType}
+        AND `current_date` = #{currentDate}
+    </select>
+
+    <select id="queryByUserIdAndDateAndTypeForUpdate" resultMap="PlayRecordSummaryResultMap">
+        SELECT *
+        FROM play_record_summary
+        WHERE `user_id` = #{userId} AND `current_date` = #{currentDate}
+        AND `type` = #{type}
+        AND `sub_type` = #{subType}
+        <!--  读锁：多个线程可以同时读，但是不允许其他线程去写  -->
+        <!--  写锁：只允许一个线程去写，且在写的时候不能去读  -->
+        <!--  这里加了一个写锁：  -->
+        FOR UPDATE
+    </select>
+</mapper>
